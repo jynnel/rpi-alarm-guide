@@ -185,6 +185,8 @@ Don't forget to perform `pacman -Syu` regularly, especially before syncing new p
 
 Congratulations! You now have a tiny, very capable computer. Hopefully you didn't spend too much money on it, like me.
 
+![photo of a raspberry pi with a touch screen display](https://i.imgur.com/P9IhieD.jpg)
+
 ### Bonus: Installing FTE Quake World
 ```
 yay -S ftequake
