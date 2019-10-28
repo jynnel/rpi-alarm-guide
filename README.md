@@ -142,6 +142,41 @@ Edit the script as instructed (in the script itself) and run it on startup if yo
 ### Xscreensaver Power Options
 `pacman -S xscreensaver`, run `xscreensaver-demo`, configure it to "blank only," and navigate to the power options. You can configure it to turn off the display when the screensaver activates. You'll want to add `xscreensaver -nosplash &` to your `~/.xprofile`.
 
+However, I found that after enabling the OpenGL drivers (see somewhere below) that xscreensaver no longer turned off the touch display, but whatever was connected to the HDMI port (even if nothing was connected). To solve this I created a Python script that runs on startup. Making a systemd service might be cleaner, but I don't mind having a cluttered `~/.xprofile`.
+```
+import subprocess, sys
+from time import sleep
+
+def execute(command):
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    # Poll process for new output until finished
+    while True:
+        nextline = process.stdout.readline().decode()
+	
+        if nextline == '' and process.poll() is not None:
+            break
+        elif nextline.startswith("BLANK"):
+            subprocess.run("sh -c '/bin/echo 1 > /sys/class/backlight/rpi_backlight/bl_power'", shell=True)
+        elif nextline.startswith("UNBLANK"):
+            subprocess.run("sh -c '/bin/echo 0 > /sys/class/backlight/rpi_backlight/bl_power'", shell=True)
+
+        sys.stdout.write(nextline)
+        sys.stdout.flush()
+
+        sleep(0.25)
+
+    output = process.communicate()[0]
+    exitCode = process.returncode
+
+    if (exitCode == 0):
+        return output
+    else:
+        raise ProcessException(command, exitCode, output)
+
+execute("xscreensaver-command --watch")
+```
+
 ### Backlight Control
 For backlight control, I went with the python script [rpi-backlight](https://github.com/linusg/rpi-backlight). I just installed it with pip, for simplicity's sake. `pacman -S pip` and `pip3 install rpi-backlight`. In order for it to work, you need to add a permissions file. `su alarm` (if you're logged into `touch`) and run this command:
 ```
