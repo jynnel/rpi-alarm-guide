@@ -47,6 +47,17 @@ To start you will want the `git` and `base-devel` packages. Run: `pacman -S git 
 ### Extend the Life of your SD Card
 A basic configuration to your `/etc/fstab` would be to change `defaults` to `defaults,noatime`. `noatime` also induces `nodiratime`, so there's no need to add both. This turns off writing access times to files and directories.
 
+### Sync Stuf
+You'll want a number of packages to make the system run X11, have a window manager, etc. Here's my basic list.
+```
+pacman -S git base-devel
+pacman -S xorg-server xf86-video-fbdev xorg-xrefresh mesa
+pacman -S xf86-input-evdev xorg-xinput
+pacman -S i3-wm i3blocks i3status dmenu termite htop
+pacman -S chromium onboard ttf-dejavu
+pacman -S lightdm-gtk-greeter
+```
+
 ### Sudo
 To make `sudo` work on the `alarm` account, enter these commands:
 ```
@@ -57,16 +68,6 @@ If you must, it isn't complicated to set the `alarm` account to not require a pa
 ```nano /etc/sudoers.d/myOverrides```
 Add the line:
 ```alarm ALL=NOPASSWD:ALL```. Now you're living on the wild side.
-
-### Sync Stuf
-You'll want a number of packages to make the system run X11, have a window manager, etc. Here's my basic list.
-```
-pacman -S xorg-server xf86-video-fbdev xorg-xrefresh mesa
-pacman -S xf86-input-evdev xorg-xinput
-pacman -S i3-wm i3blocks i3status dmenu termite htop
-pacman -S chromium onboard ttf-dejavu
-pacman -S lightdm-gtk-greeter
-```
 
 ### AUR Helper
 `yay` is the one to use these days.
